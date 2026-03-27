@@ -1,0 +1,12 @@
+Icon Generation Instructions
+============================
+
+Source: icon.svg (manually created)
+
+Generate icon.png (512x512):
+  convert -background none icon.svg -resize 512x512 icon.png
+
+Generate favicon.ico (48x48):
+  convert -background none icon.svg -resize 48x48 favicon.ico
+
+Note: On ImageMagick v7+, use "magick" instead of "convert".
