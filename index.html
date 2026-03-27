@@ -3126,6 +3126,7 @@
       const heartsContainer = document.getElementById("hearts-container");
       const heartChars = ["♥", "♡", "❤", "💕", "💗"];
       let heartsInterval = null;
+      let heartsEnabled = false;
 
       function spawnHeart() {
         const el = document.createElement("span");
@@ -3140,14 +3141,21 @@
         el.addEventListener("animationend", () => el.remove());
       }
 
-      function applyFallingHearts(isOn) {
-        if (isOn && !heartsInterval) {
-          heartsInterval = setInterval(spawnHeart, 300);
-        } else if (!isOn && heartsInterval) {
-          clearInterval(heartsInterval);
-          heartsInterval = null;
-        }
+      function startHearts() {
+        if (!heartsInterval) heartsInterval = setInterval(spawnHeart, 300);
       }
+      function stopHearts() {
+        if (heartsInterval) { clearInterval(heartsInterval); heartsInterval = null; }
+      }
+
+      function applyFallingHearts(isOn) {
+        heartsEnabled = isOn;
+        if (isOn && document.hasFocus()) startHearts();
+        else stopHearts();
+      }
+
+      window.addEventListener("focus", () => { if (heartsEnabled) startHearts(); });
+      window.addEventListener("blur", stopHearts);
 
       // Listen for flag changes
       window.addEventListener("vibe-flags-changed", (e) => {
