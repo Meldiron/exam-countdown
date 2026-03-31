@@ -295,6 +295,24 @@
         background: var(--pink-500);
         transform: translateY(-2px);
       }
+      .auth-card .auth-btn-guest {
+        background: transparent;
+        color: var(--pink-600);
+        border: 2px solid var(--pink-300);
+        margin-top: 8px;
+      }
+      .auth-card .auth-btn-guest:hover {
+        background: var(--pink-50);
+        border-color: var(--pink-400);
+      }
+      body.dark .auth-card .auth-btn-guest {
+        color: var(--pink-300);
+        border-color: var(--pink-700);
+      }
+      body.dark .auth-card .auth-btn-guest:hover {
+        background: rgba(255, 182, 193, 0.08);
+        border-color: var(--pink-500);
+      }
       .auth-card .auth-btn:disabled {
         opacity: 0.5;
         cursor: not-allowed;
@@ -1907,6 +1925,7 @@
           />
         </div>
         <button class="auth-btn" id="auth-submit">Sign in</button>
+        <button class="auth-btn auth-btn-guest" id="auth-guest">Continue as guest</button>
         <div class="auth-toggle">
           <span id="auth-toggle-text">Don't have an account?</span>
           <a id="auth-toggle-link">Sign up</a>
@@ -2453,6 +2472,25 @@
             } else {
               await account.createEmailPasswordSession(email, password);
             }
+            currentUser = await account.get();
+            hideAuth();
+            onAuthReady();
+          } catch (e) {
+            errEl.textContent = e.message || "Something went wrong";
+            errEl.classList.add("visible");
+          }
+          btn.disabled = false;
+        });
+
+      document
+        .getElementById("auth-guest")
+        .addEventListener("click", async () => {
+          const btn = document.getElementById("auth-guest");
+          const errEl = document.getElementById("auth-error");
+          errEl.classList.remove("visible");
+          btn.disabled = true;
+          try {
+            await account.createAnonymousSession();
             currentUser = await account.get();
             hideAuth();
             onAuthReady();
